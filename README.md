@@ -12,6 +12,7 @@ Features:
 - Keeps statistics over (exponential) windows of 2 hours, 8 hours, 1 day and 1 week, to base decisions on
 - Very low memory (a few tens of megabytes) and cpu requirements
 - Run multiple crawlers at the same time (96 threads simultaneously by default)
+- Force connections to IPv4 or IPv6 only if desired
 - Customizable options via configuration file
 
 REQUIREMENTS

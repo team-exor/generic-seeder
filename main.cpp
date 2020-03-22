@@ -20,6 +20,7 @@ using namespace libconfig;
 
 bool fDumpAll = false;
 bool bCurrentBlockFromExplorer = false;
+string sForceIP;
 string sCurrentBlock;
 int nCurrentBlock = -1;
 int nDefaultBlockHeight = -1;
@@ -43,9 +44,10 @@ public:
   const char *tor;
   const char *ipv4_proxy;
   const char *ipv6_proxy;
+  const char *force_ip;
   std::set<uint64_t> filter_whitelist;
 
-  CDnsSeedOpts() : nThreads(96), nDnsThreads(4), nPort(53), mbox(NULL), ns(NULL), host(NULL), tor(NULL), fWipeBan(false), fWipeIgnore(false), fDumpAll(false), ipv4_proxy(NULL), ipv6_proxy(NULL) {}
+  CDnsSeedOpts() : nThreads(96), nDnsThreads(4), nPort(53), mbox(NULL), ns(NULL), host(NULL), tor(NULL), fWipeBan(false), fWipeIgnore(false), fDumpAll(false), ipv4_proxy(NULL), ipv6_proxy(NULL), force_ip("a") {}
 
   void ParseCommandLine(int argc, char **argv) {
     static const char *help = "generic-seeder\n"
@@ -62,9 +64,10 @@ public:
                               "-i <ip:port>    IPV4 SOCKS5 proxy IP/Port\n"
                               "-k <ip:port>    IPV6 SOCKS5 proxy IP/Port\n"
                               "-w f1,f2,...    Allow these flag combinations as filters\n"
+                              "-f <ip version> Force connections to nodes of a specific ip type (valid options: a = all, 4 = IPv4, 6 = IPv6) (default a)\n"
                               "--wipeban       Wipe list of banned nodes\n"
                               "--wipeignore    Wipe list of ignored nodes\n"
-                              "--dumpall       Dump all unique nodes\n"							  
+                              "--dumpall       Dump all unique nodes\n"
                               "-?, --help      Show this text\n"
                               "\n";
     bool showHelp = false;
@@ -81,6 +84,7 @@ public:
         {"proxyipv4", required_argument, 0, 'i'},
         {"proxyipv6", required_argument, 0, 'k'},
         {"filter", required_argument, 0, 'w'},
+        {"forceip", required_argument, 0, 'f'},
         {"wipeban", no_argument, &fWipeBan, 1},
         {"wipeignore", no_argument, &fWipeIgnore, 1},
         {"dumpall", no_argument, &fDumpAll, 1},
@@ -88,7 +92,7 @@ public:
         {0, 0, 0, 0}
       };
       int option_index = 0;
-      int c = getopt_long(argc, argv, "h:n:m:t:p:d:o:i:k:w:?", long_options, &option_index);
+      int c = getopt_long(argc, argv, "h:n:m:t:p:d:o:i:k:w:f:?", long_options, &option_index);
       if (c == -1) break;
       switch (c) {
         case 'h': {
@@ -150,6 +154,11 @@ public:
             }
             filter_whitelist.insert(l);
           }
+          break;
+        }
+
+        case 'f': {
+          force_ip = optarg;
           break;
         }
 
@@ -608,6 +617,10 @@ int main(int argc, char **argv) {
       SetProxy(NET_IPV6, service);
     }
   }
+  if (strcmp(opts.force_ip, "A") != 0 && strcmp(opts.force_ip, "a") != 0 && strcmp(opts.force_ip, "4") != 0 && strcmp(opts.force_ip, "6") != 0) {
+    fprintf(stderr, "Invalid force ip option. Valid options are: a = all (default), 4 = IPv4, 6 = IPv6.\n");
+    exit(1);
+  }
   bool fDNS = true;
   if (!opts.ns) {
     printf("No nameserver set. Not starting DNS server.\n");
@@ -633,6 +646,7 @@ int main(int argc, char **argv) {
     printf("done\n");
   }
   fDumpAll = opts.fDumpAll;
+  sForceIP.assign(opts.force_ip, strlen(opts.force_ip));
   pthread_t threadBlock, threadDns, threadSeed, threadDump, threadStats;
   printf("Starting block reader...");
   pthread_create(&threadBlock, NULL, ThreadBlockReader, NULL);
