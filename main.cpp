@@ -179,9 +179,7 @@ public:
   }
 };
 
-extern "C" {
 #include "dns.h"
-}
 
 CAddrDb db;
 
