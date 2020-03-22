@@ -80,7 +80,8 @@ class CNode {
     CAddress me(CService("0.0.0.0"));
     BeginMessage("version");
     string ver = "/generic-seeder/";
-    vSend << cfg_protocol_version << nLocalServices << nTime << you << me << nLocalNonce << ver << nCurrentBlock;
+    uint8_t fRelayTxs = 0;
+    vSend << cfg_protocol_version << nLocalServices << nTime << you << me << nLocalNonce << ver << nCurrentBlock << fRelayTxs;
     EndMessage();
   }
  
