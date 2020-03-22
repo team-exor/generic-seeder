@@ -29,6 +29,8 @@ int cfg_protocol_version;
 unsigned char cfg_message_start[4];
 int cfg_wallet_port;
 string cfg_explorer_url;
+string cfg_explorer_url2;
+int cfg_explorer_requery_seconds;
 
 class CDnsSeedOpts {
 public:
@@ -387,30 +389,25 @@ size_t writeCallback(char* buf, size_t size, size_t nmemb, void* up) {
     return size*nmemb; //tell curl how many bytes we handled
 }
 
-void readCurrentBlock() {
-	if (cfg_explorer_url != "") {
-		sCurrentBlock = "";
-		CURL* curl;
-		curl_global_init(CURL_GLOBAL_ALL);
-		curl = curl_easy_init();
-		curl_easy_setopt(curl, CURLOPT_URL, cfg_explorer_url.c_str());
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
-		curl_easy_perform(curl);
-		curl_easy_cleanup(curl);
-		curl_global_cleanup();
-		
-		if (!sCurrentBlock.empty() && is_numeric(&sCurrentBlock[0u])) {
-			nCurrentBlock = std::stoi(sCurrentBlock);
-			nDefaultBlockHeight = nCurrentBlock;
-			bCurrentBlockFromExplorer = true;
-		} else {
-			nCurrentBlock = nDefaultBlockHeight;
-			bCurrentBlockFromExplorer = false;
-		}
-	} else {
-		nCurrentBlock = nDefaultBlockHeight;
-		bCurrentBlockFromExplorer = false;
-	}
+int readBlockHeightFromExplorer(string sExplorerURL) {
+    int nReturn = -1;
+
+    sCurrentBlock = "";
+    CURL* curl;
+    curl_global_init(CURL_GLOBAL_ALL);
+    curl = curl_easy_init();
+    curl_easy_setopt(curl, CURLOPT_URL, sExplorerURL.c_str());
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, &writeCallback);
+    curl_easy_perform(curl);
+    curl_easy_cleanup(curl);
+    curl_global_cleanup();
+
+    if (!sCurrentBlock.empty() && is_numeric(&sCurrentBlock[0u])) {
+        // Block height from explorer was read successfully
+        nReturn = std::stoi(sCurrentBlock);
+    }
+
+    return nReturn;
 }
 
 int hex_string_to_int(std::string sHexString) {
@@ -422,10 +419,48 @@ int hex_string_to_int(std::string sHexString) {
 }
 
 extern "C" void* ThreadBlockReader(void*) {
-	do {
-		readCurrentBlock();
-		Sleep(60000);
-    } while(1);
+	// Check if block explorer 1 is set
+	if (cfg_explorer_url != "") {
+		do {
+			// Read from block explorer 1
+			int nReturnBlock = readBlockHeightFromExplorer(cfg_explorer_url);
+
+			if (nReturnBlock == -1) {
+				// Block explorer 1 failed to return a proper block height
+				// Check if block explorer 2 is set
+				if (cfg_explorer_url2 != "") {
+					nReturnBlock = readBlockHeightFromExplorer(cfg_explorer_url2);
+
+					if (nReturnBlock == -1) {
+						// Block explorer 2 failed to return a proper block height
+						nCurrentBlock = nDefaultBlockHeight;
+						bCurrentBlockFromExplorer = false;
+					} else {
+						// Block explorer 2 returned a block height
+						nCurrentBlock = std::stoi(sCurrentBlock);
+						nDefaultBlockHeight = nCurrentBlock;
+						bCurrentBlockFromExplorer = true;
+					}
+				} else {
+					// No block explorer 2 is set
+					nCurrentBlock = nDefaultBlockHeight;
+					bCurrentBlockFromExplorer = false;
+				}
+			} else {
+				// Block explorer 1 returned a block height
+				nCurrentBlock = std::stoi(sCurrentBlock);
+				nDefaultBlockHeight = nCurrentBlock;
+				bCurrentBlockFromExplorer = true;
+			}
+				
+			Sleep(cfg_explorer_requery_seconds * 1000);
+		} while(1);
+	} else {
+		// No block explorers are set so default to getting the hardcoded block height
+		nCurrentBlock = nDefaultBlockHeight;
+		bCurrentBlockFromExplorer = false;
+	}
+	return nullptr;
 }
 
 extern "C" void* ThreadDumper(void*) {
@@ -563,8 +598,32 @@ int main(int argc, char **argv) {
   try {
     cfg_explorer_url = cfg.lookup("explorer_url").c_str();
   } catch(const SettingNotFoundException &nfex) {
-    cerr << "Error: Missing 'explorer_url' setting in configuration file." << endl;
-	return(EXIT_FAILURE);
+    cfg_explorer_url = "";
+  }
+  
+  try {
+    cfg_explorer_url2 = cfg.lookup("second_explorer_url").c_str();
+	if (cfg_explorer_url2 != "" && cfg_explorer_url == "") {
+		cfg_explorer_url = cfg_explorer_url2;
+		cfg_explorer_url2 = "";
+	}
+  } catch(const SettingNotFoundException &nfex) {
+	  cfg_explorer_url2 = "";
+  }  
+
+  try {
+    cfg_explorer_requery_seconds = std::stoi(cfg.lookup("explorer_requery_seconds").c_str());
+    if (cfg_explorer_requery_seconds < 1) {
+      cerr << "Error: 'explorer_requery_seconds' setting must be greater than zero." << endl;
+      return(EXIT_FAILURE);
+    }
+  } catch(const SettingNotFoundException &nfex) {
+    if (cfg_explorer_url != "" || cfg_explorer_url2 != "") {
+      cerr << "Error: Missing 'explorer_requery_seconds' setting in configuration file." << endl;
+      return(EXIT_FAILURE);
+    } else {
+      cfg_explorer_requery_seconds = 0;
+    }
   }
   
   try {

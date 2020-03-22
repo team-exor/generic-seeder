@@ -6,7 +6,7 @@ The generic-seeder app is a crawler that can easily be customized for almost any
 Features:
 - Regularly revisits known nodes to check their availability
 - CloudFlare DNS integration
-- Block explorer integration
+- Block explorer integration (including support for a 2nd failover explorer)
 - Keep a running list of all nodes in the network or only show nodes that are above a certain version
 - Bans/Unlists nodes after enough failures, or bad behaviour
 - Keeps statistics over (exponential) windows of 2 hours, 8 hours, 1 day and 1 week, to base decisions on
