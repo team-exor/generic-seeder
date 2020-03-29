@@ -615,11 +615,16 @@ int main(int argc, char **argv) {
   }  
 
   try {
-    cfg_explorer_requery_seconds = std::stoi(cfg.lookup("explorer_requery_seconds").c_str());
-    if (cfg_explorer_requery_seconds < 1) {
-      cerr << "Error: 'explorer_requery_seconds' setting must be greater than zero." << endl;
-      return(EXIT_FAILURE);
-    }
+      if (is_numeric(const_cast<char*>(cfg.lookup("explorer_requery_seconds").c_str()))) {
+          cfg_explorer_requery_seconds = std::stoi(cfg.lookup("explorer_requery_seconds").c_str());
+          if (cfg_explorer_requery_seconds < 1) {
+              cerr << "Error: 'explorer_requery_seconds' setting must be greater than zero." << endl;
+              return(EXIT_FAILURE);
+          }
+      } else {
+          // Default to 60 seconds
+          cfg_explorer_requery_seconds = 60;
+      }
   } catch(const SettingNotFoundException &nfex) {
     if (cfg_explorer_url != "" || cfg_explorer_url2 != "") {
       cerr << "Error: Missing 'explorer_requery_seconds' setting in configuration file." << endl;
@@ -628,7 +633,7 @@ int main(int argc, char **argv) {
       cfg_explorer_requery_seconds = 0;
     }
   }
-  
+
   try {
 	nDefaultBlockHeight = std::stoi(cfg.lookup("block_count").c_str());
 	nCurrentBlock = nDefaultBlockHeight;
