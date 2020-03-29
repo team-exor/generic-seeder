@@ -367,16 +367,19 @@ bool is_numeric(char *string) {
     int iteration = 0;
     bool isNumeric = true;
 
-    while(iteration < sizeOfString)
-    {
-        if(!isdigit(string[iteration]))
+    if (sizeOfString > 0) {
+        while(iteration < sizeOfString)
         {
-            isNumeric = false;
-            break;
+            if (!isdigit(string[iteration]))
+            {
+                isNumeric = false;
+                break;
+            }
+
+            iteration++;
         }
-
-        iteration++;
-
+    } else {
+        isNumeric = false;
     }
 
     return isNumeric;
