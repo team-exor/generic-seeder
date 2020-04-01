@@ -66,8 +66,7 @@ On the system vps.example.com, you can now run dnsseed:
 ./dnsseed -h dnsseed.example.com -n vps.example.com
 ```
 
-If you want the DNS server to report SOA records, please provide an
-e-mail address (with the @ part replaced by .) using -m.
+If you want the DNS server to report SOA records, please provide an e-mail address using -m.
 
 USAGE: CLOUDFLARE API MODE
 --------------------------

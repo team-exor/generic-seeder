@@ -385,6 +385,25 @@ bool is_numeric(char *string) {
     return isNumeric;
 }
 
+const char* charReplace(const char *str, char ch1, char ch2)
+{
+    char *newStr = new char[strlen(str)+1];
+    int n = 0;
+
+    while(*str!='\0')
+    {
+        if (*str == ch1) {
+            newStr[n] = ch2;
+        } else {
+            newStr[n] = *str;
+        }
+        str++;
+        n++;
+    }
+    newStr[n] = '\0';
+    return (const char *)newStr;
+}
+
 size_t writeCallback(char* buf, size_t size, size_t nmemb, void* up) {
     for (int c = 0; c<size*nmemb; c++) {
         sCurrentBlock.push_back(buf[c]);
@@ -700,6 +719,9 @@ int main(int argc, char **argv) {
   if (opts.mbox == NULL) {
     // No email set. Initialize to "" string
     opts.mbox = "";
+  } else {
+    // Email is set. Replace "@" with "."
+    opts.mbox = charReplace(opts.mbox, '@', '.');
   }
   FILE *f = fopen("dnsseed.dat","r");
   if (f) {
