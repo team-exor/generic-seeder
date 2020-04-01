@@ -45,28 +45,24 @@ This will produce the `dnsseed` binary.
 USAGE: LOCAL DNS SERVER MODE
 ----------------------------
 
-Assuming you want to run a dns seed on dnsseed.example.com, you will
-need an authorative NS record in example.com's domain record, pointing
-to for example vps.example.com:
+For example, if you want to run a DNS seed on dnsseed.example.com, you will need an authorative NS record in example.com's domain record that points back to your server. It is required to create both an NS and "A" record to tie everything together.
 
-```
-dig -t NS dnsseed.example.com
-```
+| Record Type | Name/Host | Value/Nameserver |
+| ----------- | --------- | ---------------- |
+| A           | vps       | 123.231.123.231  |
+| NS          | dnsseed   | vps.example.com  |
 
-Example response:
-
-```
-;; ANSWER SECTION
-dnsseed.example.com.   86400    IN      NS     vps.example.com.
-```
-
-On the system vps.example.com, you can now run dnsseed:
+On the system vps.example.com, you can now run the seeder app:
 
 ```
 ./dnsseed -h dnsseed.example.com -n vps.example.com
 ```
 
-If you want the DNS server to report SOA records, please provide an e-mail address using -m.
+If you want the DNS server to report SOA records, you must provide an email address using the `-m` argument:
+
+```
+./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com
+```
 
 USAGE: CLOUDFLARE API MODE
 --------------------------
