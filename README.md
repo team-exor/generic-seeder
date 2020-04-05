@@ -132,7 +132,7 @@ working properly by running the following cmd in the format
 nslookup dnsseed.example.com
 ```
 
-If everythig is working correctly, you will see a number of "Name:" and
+If everything is working correctly, you will see a number of "Name:" and
 "Address:" lines near the end of the output:
 
 ```
