@@ -15,6 +15,10 @@ Features:
 - Force connections to IPv4 or IPv6 only if desired
 - Customizable options via configuration file
 
+FULL SETUP INSTRUCTIONS
+-----------------------
+Detailed set up instructions can be found in the [DNS Seeder Setup Guide](/SETUP.md)
+
 REQUIREMENTS
 ------------
 
@@ -162,3 +166,6 @@ automatically update the seeds list every 30 minutes or so:
 ```
 */30 * * * * cd /path/to/seeder/cf-uploader && python seeder.py
 ```
+
+---
+Need more help? Read the [DNS Seeder Setup Guide](/SETUP.md)
