@@ -52,7 +52,7 @@ For example, if you want to run a DNS seed on dnsseed.example.com, you will need
 | A           | vps       | 123.231.123.231  |
 | NS          | dnsseed   | vps.example.com  |
 
-On the system vps.example.com, you can now run the seeder app:
+On the system vps.example.com, you can now run the seeder app as the root user:
 
 ```
 ./dnsseed -h dnsseed.example.com -n vps.example.com
@@ -62,6 +62,24 @@ If you want the DNS server to report SOA records, you must provide an email addr
 
 ```
 ./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com
+```
+
+Non-root users must run the seeder app as the root user using the `sudo` cmd:
+
+```
+sudo ./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com
+```
+
+Or, another alternative to running the seeder app as a non-root user is to first add a redirect entry for port 53 in the iptables firewall system (this one-time cmd requires root privileges):
+
+```
+sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353
+``` 
+
+After adding the new iptables rule, the seeder app can be called without `sudo`, but you must always specify the redirected port using the `-p` argument:
+
+```
+./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com -p 5353
 ```
 
 USAGE: CLOUDFLARE API MODE
