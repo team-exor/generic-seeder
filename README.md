@@ -103,7 +103,7 @@ After a few minutes of running the generic seeder and the dnsseed.dump
 file has been populated you can then test CloudFlare mode:
 
 ```
-python /path/to/seeder/cf-uploader/seeder.py
+cd /path/to/seeder/cf-uploader && python seeder.py
 ```
 
 Assuming no errors were reported, you can check that your seeder domain is
