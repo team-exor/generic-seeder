@@ -448,30 +448,34 @@ extern "C" void* ThreadBlockReader(void*) {
 			// Read from block explorer 1
 			int nReturnBlock = readBlockHeightFromExplorer(cfg_explorer_url);
 
-			if (nReturnBlock == -1) {
-				// Block explorer 1 failed to return a proper block height
+			if (nReturnBlock == -1 || nReturnBlock == nCurrentBlock) {
+				// Block explorer 1 failed to return a proper block height or the value is the same as the previous value
 				// Check if block explorer 2 is set
 				if (cfg_explorer_url2 != "") {
+					// Save the value from explorer 1
+					int nReturnBlockSave = nReturnBlock;
+					// Read from block explorer 2
 					nReturnBlock = readBlockHeightFromExplorer(cfg_explorer_url2);
 
-					if (nReturnBlock == -1) {
+					if (nReturnBlockSave == -1 && nReturnBlock == -1) {
 						// Block explorer 2 failed to return a proper block height
 						nCurrentBlock = nDefaultBlockHeight;
 						bCurrentBlockFromExplorer = false;
 					} else {
 						// Block explorer 2 returned a block height
-						nCurrentBlock = std::stoi(sCurrentBlock);
+						// Compare and take the higher value from both block explorers
+						nCurrentBlock = (nReturnBlock > nReturnBlockSave ? nReturnBlock : nReturnBlockSave);
 						nDefaultBlockHeight = nCurrentBlock;
 						bCurrentBlockFromExplorer = true;
 					}
 				} else {
 					// No block explorer 2 is set
-					nCurrentBlock = nDefaultBlockHeight;
-					bCurrentBlockFromExplorer = false;
+					nCurrentBlock = (nReturnBlock == -1 ? nDefaultBlockHeight : nReturnBlock);
+					bCurrentBlockFromExplorer = nReturnBlock != -1;
 				}
 			} else {
 				// Block explorer 1 returned a block height
-				nCurrentBlock = std::stoi(sCurrentBlock);
+				nCurrentBlock = nReturnBlock;
 				nDefaultBlockHeight = nCurrentBlock;
 				bCurrentBlockFromExplorer = true;
 			}
