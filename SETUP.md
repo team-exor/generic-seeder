@@ -102,7 +102,7 @@ This section must be completed on a computer running the Linux operating system.
 
 1. Install the dependencies for the DNS seeder app by running the following cmd in the terminal:
 
-   `sudo apt-get install build-essential libboost-all-dev libssl-dev libcurl4-openssl-dev libconfig++8-dev`
+   `sudo apt-get install build-essential libboost-all-dev libssl-dev libcurl4-openssl-dev libconfig++-dev`
    
 2. **ONLY COMPLETE THIS STEP IF YOU ARE SETTING UP THE SEEDER FOR USE WITH CLOUDFLARE, OTHERWISE YOU MAY SKIP THIS STEP.**<br /><br />
    Extra setup is required before CloudFlare mode will work properly. Run the following cmds in the terminal, one line at a time:

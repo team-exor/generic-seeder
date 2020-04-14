@@ -23,7 +23,7 @@ REQUIREMENTS
 ------------
 
 ```
-sudo apt-get install build-essential libboost-all-dev libssl-dev libcurl4-openssl-dev libconfig++8-dev
+sudo apt-get install build-essential libboost-all-dev libssl-dev libcurl4-openssl-dev libconfig++-dev
 ```
 
 CONFIGURE
