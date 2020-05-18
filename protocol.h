@@ -38,7 +38,6 @@ class CMessageHeader
              READWRITE(FLATDATA(cfg_message_start));
              READWRITE(FLATDATA(pchCommand));
              READWRITE(nMessageSize);
-             if (nVersion >= 209)
              READWRITE(nChecksum);
             )
 
