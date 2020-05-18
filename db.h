@@ -15,6 +15,7 @@
 extern bool bCurrentBlockFromExplorer;
 extern int nCurrentBlock;
 extern int cfg_protocol_version;
+extern int cfg_init_proto_version;
 extern int cfg_wallet_port;
 extern std::string cfg_explorer_url;
 

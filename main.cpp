@@ -26,6 +26,7 @@ int nCurrentBlock = -1;
 int nDefaultBlockHeight = -1;
 
 int cfg_protocol_version;
+int cfg_init_proto_version;
 unsigned char cfg_message_start[4];
 int cfg_wallet_port;
 string cfg_explorer_url;
@@ -603,6 +604,13 @@ int main(int argc, char **argv) {
     cfg_protocol_version = std::stoi(cfg.lookup("protocol_version").c_str());
   } catch(const SettingNotFoundException &nfex) {
     cerr << "Error: Missing 'protocol_version' setting in configuration file." << endl;
+	return(EXIT_FAILURE);
+  }
+
+  try {
+    cfg_init_proto_version = std::stoi(cfg.lookup("init_proto_version").c_str());
+  } catch(const SettingNotFoundException &nfex) {
+    cerr << "Error: Missing 'init_proto_version' setting in configuration file." << endl;
 	return(EXIT_FAILURE);
   }
 

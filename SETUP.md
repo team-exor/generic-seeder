@@ -134,6 +134,7 @@ sudo rm -rf python-cloudflare
 ##### Extra details about each specific config settings:
 
 - **protocol_version (Required):** This is the current protocol version that should be used by the seeder app to crawl your network and connect to other nodes. **Ex:** 70015. Typically you can find the protocol version in your coins `version.h` file.
+- **init_proto_version (Required):** This is the protocol version that should be used as a starting value to communicate with nodes on the blockahin. **Ex:** 209. Typically you can find the init protocol version in your coins `version.h` file.
 - **pchMessageStart_0 (Required):** The first byte of the "magic bytes" that are unique to the blockchain you are configuring. Must be prefixed with 0x followed by the two digits to make up the full byte. **Ex:** 0x11. Typically you can find the 4 pchMessageStart values in your coins `main.cpp` or `chainparams.cpp` file.
 - **pchMessageStart_1 (Required):** The second byte of the "magic bytes" that are unique to the blockchain you are configuring. Must be prefixed with 0x followed by the two digits to make up the full byte. **Ex:** 0x22. Typically you can find the 4 pchMessageStart values in your coins `main.cpp` or `chainparams.cpp` file.
 - **pchMessageStart_2 (Required):** The third byte of the "magic bytes" that are unique to the blockchain you are configuring. Must be prefixed with 0x followed by the two digits to make up the full byte. **Ex:** 0x33. Typically you can find the 4 pchMessageStart values in your coins `main.cpp` or `chainparams.cpp` file.
