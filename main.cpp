@@ -28,6 +28,7 @@ int nDefaultBlockHeight = -1;
 int cfg_protocol_version;
 int cfg_init_proto_version;
 int cfg_min_peer_proto_version;
+int cfg_caddr_time_version;
 unsigned char cfg_message_start[4];
 int cfg_wallet_port;
 string cfg_explorer_url;
@@ -620,6 +621,13 @@ int main(int argc, char **argv) {
   } catch(const SettingNotFoundException &nfex) {
     // If the value is not properly set, then default min_peer_proto_version to the protocol_version
     cfg_min_peer_proto_version = cfg_protocol_version;
+  }
+
+  try {
+    cfg_caddr_time_version = std::stoi(cfg.lookup("caddr_time_version").c_str());
+  } catch(const SettingNotFoundException &nfex) {
+    cerr << "Error: Missing 'caddr_time_version' setting in configuration file." << endl;
+	return(EXIT_FAILURE);
   }
 
   for (int i=0; i<4; i++) {
