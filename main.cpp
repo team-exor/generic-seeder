@@ -570,7 +570,7 @@ extern "C" void* ThreadStats(void*) {
   return nullptr;
 }
 
-string sSeeds[10];
+string sSeeds[11];
 string *seeds = sSeeds;
 
 extern "C" void* ThreadSeeder(void*) {
