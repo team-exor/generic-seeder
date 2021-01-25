@@ -22,7 +22,7 @@ def main():
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
     try:
-        seed_candidates = parser.read_seed_dump(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + string.replace(configuration['cf_seed_dump'], '"', ''), string.replace(configuration['wallet_port'], '"', '')[:7].strip())
+        seed_candidates = parser.read_seed_dump(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + configuration['cf_seed_dump'].replace('"', ''), configuration['wallet_port'].replace('"', '')[:7].strip())
     except errors.SeedsNotFound as e:
         print("ERROR: Problem reading seeds - {}".format(e.message))
         sys.exit(-1)

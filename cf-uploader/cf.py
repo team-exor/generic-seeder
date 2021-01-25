@@ -40,10 +40,10 @@ class CloudflareSeeder(object):
 
         logger.debug("Creating CloudflareSeeder interface from configuration.")
 
-        user = string.replace(configuration['cf_username'], '"', '')
-        key = string.replace(configuration['cf_api_key'], '"', '')
-        domain = string.replace(configuration['cf_domain'], '"', '')
-        name = string.replace(configuration['cf_domain_prefix'], '"', '')
+        user = configuration['cf_username'].replace('"', '')
+        key = configuration['cf_api_key'].replace('"', '')
+        domain = configuration['cf_domain'].replace('"', '')
+        name = configuration['cf_domain_prefix'].replace('"', '')
 
         return CloudflareSeeder(user, key, domain, name)
 
