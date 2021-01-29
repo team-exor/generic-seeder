@@ -2,8 +2,8 @@
 
 import os
 import logging
-import ConfigParser
-import StringIO
+import configparser
+import io
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ def read_config_section(config, section):
             configuration[option] = config.get(section, option)
             logger.debug("Successfully read option {}: {}".format(option, configuration[option]))
 
-        except ConfigParser.NoOptionError:
+        except configparser.NoOptionError:
             logger.warning("Could not read config option {} from section {}".format(option, section))
             configuration[option] = None
 
@@ -46,6 +46,6 @@ def read_config_section(config, section):
 
 
 def read_local_config():
-    config_parser = ConfigParser.RawConfigParser()
-    config_parser.readfp(StringIO.StringIO(get_conf_file_contents()))
+    config_parser = configparser.RawConfigParser()
+    config_parser.readfp(io.StringIO(get_conf_file_contents()))
     return read_config_section(config_parser, "general")
