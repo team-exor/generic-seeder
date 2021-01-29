@@ -89,17 +89,11 @@ After adding the new iptables rule, the seeder app can be called without `sudo`,
 USAGE: CLOUDFLARE API MODE
 --------------------------
 
-Extra setup is required before CloudFlare mode will work properly.
-Run the following cmds:
+Extra setup is required before CloudFlare mode will work properly. Python 3+ and the Cloudflare Python API must be installed. Run the following cmds in the terminal, one line at a time:
 
 ```
-sudo apt-get install python python-setuptools
-git clone https://github.com/cloudflare/python-cloudflare
-cd python-cloudflare
-./setup.py build
-sudo ./setup.py install
-cd ..
-sudo rm -rf python-cloudflare
+sudo apt-get install python3 python3-pip
+sudo pip3 install cloudflare
 ```
 
 You must also fill in the CloudFlare API config section at the bottom
@@ -125,7 +119,7 @@ After a few minutes of running the generic seeder and the dnsseed.dump
 file has been populated you can then test CloudFlare mode:
 
 ```
-cd /path/to/seeder/cf-uploader && python seeder.py
+cd /path/to/seeder/cf-uploader && python3 seeder.py
 ```
 
 Assuming no errors were reported, you can check that your seeder domain is
@@ -164,7 +158,7 @@ Once configured correctly, it is recommended to set up a cron job that will
 automatically update the seeds list every 30 minutes or so:
 
 ```
-*/30 * * * * cd /path/to/seeder/cf-uploader && python seeder.py
+*/30 * * * * cd /path/to/seeder/cf-uploader && python3 seeder.py
 ```
 
 ---

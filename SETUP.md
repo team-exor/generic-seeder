@@ -105,16 +105,11 @@ This section must be completed on a computer running the Linux operating system.
    `sudo apt-get install build-essential libboost-all-dev libssl-dev libcurl4-openssl-dev libconfig++-dev`
    
 2. **ONLY COMPLETE THIS STEP IF YOU ARE SETTING UP THE SEEDER FOR USE WITH CLOUDFLARE, OTHERWISE YOU MAY SKIP THIS STEP.**<br /><br />
-   Extra setup is required before CloudFlare mode will work properly. Run the following cmds in the terminal, one line at a time:
+   Extra setup is required before CloudFlare mode will work properly. Python 3+ and the Cloudflare Python API must be installed. Run the following cmds in the terminal, one line at a time:
 
 ```
-sudo apt-get install python python-setuptools
-git clone https://github.com/cloudflare/python-cloudflare
-cd python-cloudflare
-./setup.py build
-sudo ./setup.py install
-cd ..
-sudo rm -rf python-cloudflare
+sudo apt-get install python3 python3-pip
+sudo pip3 install cloudflare
 ```   
    
 3. Download the latest copy of the generic DNS seeder app by running the following cmd in the terminal:
@@ -183,14 +178,14 @@ sudo rm -rf python-cloudflare
 
 10. **ONLY COMPLETE THIS STEP IF YOU ARE SETTING UP THE SEEDER FOR USE WITH CLOUDFLARE, OTHERWISE YOU MAY SKIP THIS STEP.**<br /><br />
    An extra step is required for taking the "good" list of nodes from the DNS seeder app and sending it to Cloudflare. To do this manually you can run the following cmd in the terminal:<br /><br />
-   `cd /path/to/seeder/cf-uploader && python seeder.py`<br /><br />
+   `cd /path/to/seeder/cf-uploader && python3 seeder.py`<br /><br />
    Change `/path/to/seeder/` so that it matches the location of where you installed the DNS Seeder app. After running this cmd, if everything went well and is working, you should be able to immediately run the following cmd in a terminal window and see results (Be sure to change `dnsseed.example.com` to your fully qualified NS record):<br /><br />
    `nslookup dnsseed.example.com`<br /><br />
    The IP addresses that are returned from the `nslookup` cmd are coming from your `dnsseed.dump` file, so you can always double-check by cross-referencing some of the IP addresses in both places.<br /><br />
    Once you are sure that everything is working, it is recommended to set up a cron job that will automatically update the seeds list every 30 minutes or so by running the following cmd in a terminal:<br /><br />
    `crontab -e`<br /><br />
    Then add this line to the bottom of the crontab file that opens up (Be sure to change the `/path/to/seeder/` part so it matches the location of where you installed the DNS Seeder app):<br /><br />
-   `*/30 * * * * cd /path/to/seeder/cf-uploader && python seeder.py`
+   `*/30 * * * * cd /path/to/seeder/cf-uploader && python3 seeder.py`
 
 11. **ONLY COMPLETE THIS STEP IF YOU ARE SETTING UP THE SEEDER USING THE [LOCAL DNS SERVER SETUP](#local-dns-server-setup) METHOD AND DO NOT WANT TO ALWAYS HAVE TO RUN THE SEEDER APP AS THE ROOT USER, OTHERWISE YOU MAY SKIP THIS STEP.**<br /><br />
    Because non-root users cannot access ports below 1024, an extra step is required to allow you to run the DNS server (which must always use port 53) without root privileges. The easiest way to do this is by running the following cmd in the terminal (this one-time cmd requires root privileges to execute successfully):<br /><br />
