@@ -59,7 +59,7 @@ For example, if you want to run a DNS seed on dnsseed.example.com, you will need
 On the system vps.example.com, you can now run the seeder app as the root user:
 
 ```
-./dnsseed -h dnsseed.example.com -n vps.example.com
+sudo ./dnsseed -h dnsseed.example.com -n vps.example.com
 ```
 
 If you want the DNS server to report SOA records, you must provide an email address using the `-m` argument:
@@ -68,13 +68,21 @@ If you want the DNS server to report SOA records, you must provide an email addr
 ./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com
 ```
 
-Non-root users must run the seeder app as the root user using the `sudo` cmd:
+There are two known options for running the seeder app using a non-root user:
+
+1. The first non-root method is to use the `setcap` command to change the capabilities of the `dnsseed` binary file to specifically allow the app to bind to a port less than 1024 (this one-time cmd requires root privileges):
 
 ```
-sudo ./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com
+sudo setcap 'cap_net_bind_service=+ep' /path/to/dnsseed
 ```
 
-Or, another alternative to running the seeder app as a non-root user is to first add a redirect entry for port 53 in the iptables firewall system (this one-time cmd requires root privileges):
+Once the `setcap` command is complete, you can start the seeder app as per normal, without the need for `sudo`:
+
+```
+./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com
+```
+
+2. The second non-root method is to add a redirect entry for port 53 in the iptables firewall system before running the seeder app as a non-root user (this one-time cmd requires root privileges):
 
 ```
 sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353

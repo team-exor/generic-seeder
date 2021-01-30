@@ -188,7 +188,14 @@ sudo pip3 install cloudflare
    `*/30 * * * * cd /path/to/seeder/cf-uploader && python3 seeder.py`
 
 11. **ONLY COMPLETE THIS STEP IF YOU ARE SETTING UP THE SEEDER USING THE [LOCAL DNS SERVER SETUP](#local-dns-server-setup) METHOD AND DO NOT WANT TO ALWAYS HAVE TO RUN THE SEEDER APP AS THE ROOT USER, OTHERWISE YOU MAY SKIP THIS STEP.**<br /><br />
-   Because non-root users cannot access ports below 1024, an extra step is required to allow you to run the DNS server (which must always use port 53) without root privileges. The easiest way to do this is by running the following cmd in the terminal (this one-time cmd requires root privileges to execute successfully):<br /><br />
+   Because non-root users cannot access ports below 1024, an extra step is required to allow you to run the DNS server (which must always use port 53) without root privileges. There are two known workaround methods that both require a one-time command be executed as root:
+
+    1. The first method is to use the `setcap` command to change the capabilities of the `dnsseed` binary file to specifically allow the app to bind to a port less than 1024 (this one-time cmd requires root privileges to execute successfully):<br /><br />
+   `sudo setcap 'cap_net_bind_service=+ep' /path/to/dnsseed`<br /><br />
+   Once the `setcap` command is complete, you can start the seeder app as per normal, without the need for `sudo`:<br /><br />
+   `./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com`
+
+    2. The second method is to add a redirect entry for port 53 in the iptables firewall system before running the seeder app as a non-root user by running the following cmd in the terminal (this one-time cmd requires root privileges to execute successfully):<br /><br />
    `sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353`<br /><br />
    Now, when starting the DNS seeder app, you must always specify the redirected port using the `-p` argument:<br /><br />
    `./dnsseed -h dnsseed.example.com -n vps.example.com -m test@example.com -p 5353`<br /><br />
