@@ -18,6 +18,7 @@ extern int cfg_protocol_version;
 extern int cfg_init_proto_version;
 extern int cfg_min_peer_proto_version;
 extern int cfg_wallet_port;
+extern std::string sAppName;
 extern std::string cfg_explorer_url;
 
 std::string static inline ToString(const CService &ip) {

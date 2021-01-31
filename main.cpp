@@ -20,6 +20,8 @@ using namespace libconfig;
 
 bool fDumpAll = false;
 bool bCurrentBlockFromExplorer = false;
+string sAppName = "generic-seeder";
+string sAppVersion = "1.0.0";
 string sForceIP;
 string sCurrentBlock;
 int nCurrentBlock = -1;
@@ -607,7 +609,8 @@ extern "C" void* ThreadSeeder(void*) {
 int main(int argc, char **argv) {
   Config cfg;
   string sConfigName = "settings.conf";
-  
+  printf("%s\n", (sAppName + " v" + sAppVersion).c_str());
+
   try {
     cfg.readFile(sConfigName.c_str());
   } catch(const FileIOException &fioex) {

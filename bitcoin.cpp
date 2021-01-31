@@ -77,7 +77,7 @@ class CNode {
     int64 nLocalServices = 0;
     CAddress me(CService("0.0.0.0"));
     BeginMessage("version");
-    string ver = "/generic-seeder/";
+    string ver = "/" + sAppName + "/";
     uint8_t fRelayTxs = 0;
     vSend << cfg_protocol_version << nLocalServices << nTime << you << me << nLocalNonce << ver << nCurrentBlock << fRelayTxs;
     EndMessage();
