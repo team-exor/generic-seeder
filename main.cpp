@@ -21,7 +21,7 @@ using namespace libconfig;
 bool fDumpAll = false;
 bool bCurrentBlockFromExplorer = false;
 string sAppName = "generic-seeder";
-string sAppVersion = "1.0.0";
+string sAppVersion = "1.1.0";
 string sForceIP;
 string sCurrentBlock;
 int nCurrentBlock = -1;

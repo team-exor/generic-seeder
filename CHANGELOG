@@ -1,0 +1,40 @@
+1.1.0 [January 31, 2021]
+-Add app name + app version to startup msgs
+-Updated readme layout format and verbiage improvements 
+-Cloudflare mode now supports Python 3+ (Older python versions will no longer work)
+-Added a new parameter option (-a, --address) that forces the seeder app to bind to a specific ip address for Local DNS Server mode
+-Overwrite db services with version message results
+-Use distinct read and except sets in select()
+-Avoid strncpy for commands
+-Don't merge in re-rumours' nServices
+-Fix stack overflow in write_record_aaaa
+-Fix all known -Wvarargs, -Wreturn-type and -Wuninitialized warnings
+-Avoid strlen; use strnlen
+-Updated python3 cloudflare setup instructions
+-Updated non-root usage instructions (add new setcap method)
+-Fix segmentation fault
+-Test nodes against min_peer_proto_version instead of protocol_version
+-Add new config option for caddr_time_version
+-Add new config option for min_peer_proto_version
+-Add new config option for init_proto_version
+-Remove bitcoin-specific logic
+-Update obsolete package libconfig++8-dev
+-Query 2nd explorer if 1st explorer block height hasn't changed
+-Add DNS seeder setup guide
+-Readme fix: Add additional non-root usage examples for local DNS server mode
+-Readme fix: Cloudflare script must run from within same directory as the script itself
+-Updated Readme 'Local DNS Server Mode' instructions
+-No longer required to manually change '@' to '.' when passing email addresss for local DNS server mode
+-Email address is now optional for local DNS server mode
+-Fix for error when cfg_explorer_requery_seconds value is not numeric
+-Fix is_numeric function to handle zero-length strings
+-Add support for 2nd failover block explorer
+-Add optional cmd line argument to force connections to IPv4 or IPv6 only
+-Convert dns.c to C++
+-Add support for NODE_COMPACT_FILTERS by default
+-Send BIP37 fRelay as false
+-Delete unused TestUint256AdHoc
+-Support NODE_NETWORK_LIMITED by default
+
+1.0.0 [May 28, 2019]
+-Initial release
