@@ -4,7 +4,8 @@
 
 The generic-seeder is a blockchain network crawler that maintains a list of IP addresses of the most reliable nodes on the network and shares those node IPs via DNS request to anyone requiring an entry point into the decentralized network. Choose between two main usage modes which consist of locally running a lightweight DNS server or feeding the data into a [Cloudflare](https://www.cloudflare.com/) account in order to respond to DNS seed requests. If you just want to crawl a network to get a list of the connectable nodes, without worrying about the DNS setup, you can do that too. The seeder app is compatible with almost any bitcoin-based blockchain network and can be configured in a short amount of time by filling out a small handful of parameters in the configuration file with the data from your coin's network. Tested to work with Ubuntu 18.04+ and Debian 8.x+ but it should work fine on any Linux installation, although package names and install steps may differ.
 
-For use as a Bitmark Node Tracker / DNS Seeder, the configuration file settings.conf is provided, as well as a backup copy MARKS.settings.conf 
+This version introduces the Settings/ folder to collect pre-configured settings.conf files for different blockchains. 
+For use as a Bitmark Node Tracker / DNS Seeder, the configuration file settings.conf is provided, as well as a backup copy Settings/MARKS.settings.conf 
 
 ## Table of Contents
 
