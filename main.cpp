@@ -611,7 +611,7 @@ extern "C" void* ThreadSeeder(void*) {
 int main(int argc, char **argv) {
   Config cfg;
   string sConfigName = "settings.conf";
-  printf("%s\n", (sAppName + " v" + sAppVersion).c_str());
+  //printf("%s\n", (sAppName + " v" + sAppVersion).c_str());
 
   // Read "settings.conf" file for configuration parameters.
   try {
@@ -628,7 +628,7 @@ int main(int argc, char **argv) {
   // This version introduces "BlockChain Name" parameter 
   try {
     cfg_blockchain_name = cfg.lookup("blockchain_name").c_str();
-    cout << cfg_blockchain_name << " -  DNS Seed Server\n";
+    cout << cfg_blockchain_name << " -  DNS Seed Server - " << sAppName << " v" << sAppVersion << "\n";
   } catch(const SettingNotFoundException &nfex) {
         // return(EXIT_FAILURE); // Too drastic: can ignore this failure
         cout << "Missing 'blockchain_name' setting in configuration file." << endl;
@@ -839,9 +839,9 @@ int main(int argc, char **argv) {
   pthread_attr_destroy(&attr_crawler);
   printf("done\n");
 
-  cout << "\n" << cfg_blockchain_name << " -  DNS Seed Server\n";
+  cout << "\n   " << cfg_blockchain_name << " -  DNS Seed Server\n";
   cout << "\t for sub-domain: " << opts.host << endl;
-  cout << "dig -p  " << opts.nPort << " @" << opts.ns << "\n" << endl;
+  cout << "\t ( Query with: \'dig -p " << opts.nPort << " @" << opts.ns << " " << opts.host <<"\' )\n" << endl;
 
   pthread_create(&threadStats, NULL, ThreadStats, NULL);
   pthread_create(&threadDump, NULL, ThreadDumper, NULL);
