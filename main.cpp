@@ -27,6 +27,7 @@ string sCurrentBlock;
 int nCurrentBlock = -1;
 int nDefaultBlockHeight = -1;
 
+string	cfg_blockchain_name;
 int cfg_protocol_version;
 int cfg_init_proto_version;
 int cfg_min_peer_proto_version;
@@ -39,6 +40,7 @@ int cfg_explorer_requery_seconds;
 
 class CDnsSeedOpts {
 public:
+//  string blockchain_name ??
   int nThreads;
   int nPort;
   int nDnsThreads;
@@ -62,8 +64,8 @@ public:
                               "Usage: %s -h <host> -n <ns> [-m <mbox>] [-t <threads>] [-p <port>]\n"
                               "\n"
                               "Options:\n"
-                              "-h <host>       Hostname of the DNS seed\n"
-                              "-n <ns>         Hostname of the nameserver\n"
+                              "-h <host>       Name of the sub-domain to name-serve\n"
+                              "-n <ns>         IP address of this nameserver\n"
                               "-m <mbox>       E-Mail address reported in SOA records\n"
                               "-t <threads>    Number of crawlers to run in parallel (default 96)\n"
                               "-d <threads>    Number of DNS server threads (default 4)\n"
@@ -609,8 +611,9 @@ extern "C" void* ThreadSeeder(void*) {
 int main(int argc, char **argv) {
   Config cfg;
   string sConfigName = "settings.conf";
-  printf("%s\n", (sAppName + " v" + sAppVersion).c_str());
+  //printf("%s\n", (sAppName + " v" + sAppVersion).c_str());
 
+  // Read "settings.conf" file for configuration parameters.
   try {
     cfg.readFile(sConfigName.c_str());
   } catch(const FileIOException &fioex) {
@@ -621,7 +624,17 @@ int main(int argc, char **argv) {
               << " - " << pex.getError() << std::endl;
     return(EXIT_FAILURE);
   }
-  
+
+  // This version introduces "BlockChain Name" parameter 
+  try {
+    cfg_blockchain_name = cfg.lookup("blockchain_name").c_str();
+    cout << cfg_blockchain_name << " -  DNS Seed Server - " << sAppName << " v" << sAppVersion << "\n";
+  } catch(const SettingNotFoundException &nfex) {
+        // return(EXIT_FAILURE); // Too drastic: can ignore this failure
+        cout << "Missing 'blockchain_name' setting in configuration file." << endl;
+        cout << "Please set blockchain_name=\"<name>\" parameter in 'settings.conf' file\n";
+  }
+ 
   try {
     cfg_protocol_version = std::stoi(cfg.lookup("protocol_version").c_str());
   } catch(const SettingNotFoundException &nfex) {
@@ -662,7 +675,7 @@ int main(int argc, char **argv) {
   try {
     cfg_wallet_port = std::stoi(cfg.lookup("wallet_port").c_str());
   } catch(const SettingNotFoundException &nfex) {
-    cerr << "Error: Missing 'wallet_port' setting in configuration file." << endl;
+    cerr << "Error: Missing 'wallet_port' setting in configuration file. (ie., this blockchain's standard P2P port)" << endl;
 	return(EXIT_FAILURE);
   }
   
@@ -681,6 +694,12 @@ int main(int argc, char **argv) {
   } catch(const SettingNotFoundException &nfex) {
 	  cfg_explorer_url2 = "";
   }  
+
+  if (!cfg_explorer_url.empty()) {
+      cout << "Explorer: " << cfg_explorer_url << "\n";
+   } else {
+      cout << "Explorer URL not set.\n";
+  }
 
   try {
       if (is_numeric(const_cast<char*>(cfg.lookup("explorer_requery_seconds").c_str()))) {
@@ -710,6 +729,11 @@ int main(int argc, char **argv) {
 	return(EXIT_FAILURE);
   }
 
+  if (cfg_explorer_url.empty()) {
+      cout << "Will accept nodes reporting blockheight at or above: " << nDefaultBlockHeight << endl;
+  } else {
+      cout << "Will seek current blockheight info from: " << cfg_explorer_url << endl;
+  }
   for (int i=1; i<=10; i++) {
 	  try {
 		sSeeds[i-1] = cfg.lookup("seed_" + std::to_string(i)).c_str();
@@ -722,7 +746,8 @@ int main(int argc, char **argv) {
   signal(SIGPIPE, SIG_IGN);
   setbuf(stdout, NULL);
   CDnsSeedOpts opts;
-  opts.ParseCommandLine(argc, argv);
+  opts.ParseCommandLine(argc, argv); //  Check for command line arguments
+
   printf("Supporting whitelisted filters: ");
   for (std::set<uint64_t>::const_iterator it = opts.filter_whitelist.begin(); it != opts.filter_whitelist.end(); it++) {
       if (it != opts.filter_whitelist.begin()) {
@@ -813,6 +838,11 @@ int main(int argc, char **argv) {
   }
   pthread_attr_destroy(&attr_crawler);
   printf("done\n");
+
+  cout << "\n   " << cfg_blockchain_name << " -  DNS Seed Server\n";
+  cout << "\t for sub-domain: " << opts.host << endl;
+  cout << "\t ( Query with: \'dig -p " << opts.nPort << " @" << opts.ns << " " << opts.host <<"\' )\n" << endl;
+
   pthread_create(&threadStats, NULL, ThreadStats, NULL);
   pthread_create(&threadDump, NULL, ThreadDumper, NULL);
   void* res;
