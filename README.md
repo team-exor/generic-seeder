@@ -90,6 +90,39 @@ The seeder app comes with a built-in DNS server which listens for DNS requests a
 | A           | vps       | 123.231.123.231  |
 | NS          | dnsseed   | vps.example.com  |
 
+<hr />
+
+#### :exclamation: SPECIAL INSTRUCTIONS FOR UBUNTU USERS :exclamation:
+
+All Ubuntu releases starting with 16.10 (first released in October 2016) come installed with [systemd-resolved](https://www.freedesktop.org/software/systemd/man/systemd-resolved.service.html), which effectively prevents the seeder's built-in DNS server from working correctly. This is due to both applications requiring use of port 53, and systemd-resolved takes priority by default. There are a few ways to resolve this issue:
+
+1. :white_check_mark: Force the seeder to bind to a specific IP address by adding the following argument to the terminal cmd: `-a <ip address>`. This is the recommended solution as it doesn't require disabling of any operating system services.
+
+Example:
+
+```
+sudo ./dnsseed -h dnsseed.example.com -n vps.example.com -a 123.231.123.231
+```
+
+2. :warning: Disable binding of systemd-resolved to port 53 by editing the `/etc/systemd/resolved.conf` file and adding this line to the bottom of the file:
+
+```
+DNSStubListener=no
+```
+
+Save and reboot, and now systemd-resolved will no longer interfere with the seeder's DNS server.
+
+**NOTE:** This method is only supported by systemd 232 and newer. You can check your version of systemd with the cmd: `systemctl --version`
+
+3. :warning: Completely disable the systemd-resolved service with the following cmds (not recommended as it may cause undesired side-effects if you use the same server for anything other than running the seeder app):
+
+```
+sudo systemctl disable systemd-resolved
+sudo systemctl stop systemd-resolved
+```
+
+<hr />
+
 You can now run the seeder app on the vps.example.com system using the following terminal cmd (must be run with root permissions or the DNS server will not be able to listen for and respond to requests properly):
 
 ```
