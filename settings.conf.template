@@ -1,7 +1,7 @@
 protocol_version="70015"	// Typically you can find the protocol version in your coins version.h file
 init_proto_version="209"	// Typically you can find the init protocol version in your coins version.h file
 min_peer_proto_version="70015"	// Typically you can find the minimum peer protocol version in your coins version.h file. Leave this value blank or set it to the same value as protocol_version if this setting does not exist in your blockchain
-caddr_time_version="31402"	// Typically you can find the caddr_time_version in your coins version.h file
+caddr_time_version="31402"	// No longer used by bitcoin and some other modern cryptocurrencies. Set to blank "" or 0 if not used for your blockchain. Typically you can find the caddr_time_version in your coins version.h file if it exists
 pchMessageStart_0 = "0x11"	// Typically you can find the 4 pchMessageStart values in your coins main.cpp or chainparams.cpp file
 pchMessageStart_1 = "0x22"
 pchMessageStart_2 = "0x33"

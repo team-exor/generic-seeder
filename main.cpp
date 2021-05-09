@@ -646,8 +646,11 @@ int main(int argc, char **argv) {
   try {
     cfg_caddr_time_version = std::stoi(cfg.lookup("caddr_time_version").c_str());
   } catch(const SettingNotFoundException &nfex) {
-    cerr << "Error: Missing 'caddr_time_version' setting in configuration file." << endl;
-	return(EXIT_FAILURE);
+    // If the value is not properly set, then default caddr_time_version to zero
+    cfg_caddr_time_version = 0;
+  } catch(const std::invalid_argument& ia) {
+    // If the value is not properly set, then default caddr_time_version to zero
+    cfg_caddr_time_version = 0;
   }
 
   for (int i=0; i<4; i++) {

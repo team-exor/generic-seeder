@@ -23,6 +23,7 @@
 //  (4) checksum
 
 extern int cfg_caddr_time_version;
+extern int cfg_init_proto_version;
 extern unsigned char cfg_message_start[4];
 
 class CMessageHeader
@@ -76,8 +77,8 @@ class CAddress : public CService
                  pthis->Init();
              if (nType & SER_DISK)
              READWRITE(nVersion);
-             if ((nType & SER_DISK) || (nVersion >= cfg_caddr_time_version && !(nType & SER_GETHASH)))
-             READWRITE(nTime);
+             if ((nType & SER_DISK) || ((cfg_caddr_time_version == 0 ? nVersion != cfg_init_proto_version : nVersion >= cfg_caddr_time_version) && !(nType & SER_GETHASH)))
+                 READWRITE(nTime);
              READWRITE(nServices);
              READWRITE(*pip);
             )
