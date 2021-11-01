@@ -23,8 +23,15 @@ def main():
 
     try:
         seed_candidates = parser.read_seed_dump(os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + '/' + configuration['cf_seed_dump'].replace('"', ''), configuration['wallet_port'].replace('"', '')[:7].strip())
+    except OSError as e:
+        print("ERROR: " + configuration['cf_seed_dump'] + " dump file not found. Did you forget to run the actual seeder app?")
+        sys.exit(-1)
     except errors.SeedsNotFound as e:
-        print("ERROR: Problem reading seeds - {}".format(e.message))
+        if hasattr(e, 'message'):
+            print("ERROR: Problem reading seeds - {}".format(e.message))
+        else:
+            print("ERROR: " + str(e))
+
         sys.exit(-1)
 
     cloudflare = cf.CloudflareSeeder.from_configuration(configuration)
