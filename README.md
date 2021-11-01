@@ -156,13 +156,13 @@ Once the `setcap` command is complete, you can start the seeder app as per norma
 2. The second non-root method is to add a redirect entry for port 53 in the iptables firewall system before running the seeder app as a non-root user (this one-time cmd requires root privileges):
 
 ```
-sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353
+sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 15353
 ``` 
 
 After adding the new iptables rule, the seeder app can be called without `sudo`, but you must always specify the redirected port using the `-p` argument:
 
 ```
-./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com -p 5353
+./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com -p 15353
 ```
 
 ### Cloudflare API Mode
@@ -271,7 +271,7 @@ Once configured correctly, it is recommended to set up a cron job that will auto
 
      UDP port to listen on (default 53)
 
-     Usage Example: `./dnsseed -p 5353`
+     Usage Example: `./dnsseed -p 15353`
 - `-o` or `--onion`
 
      Tor proxy IP/Port

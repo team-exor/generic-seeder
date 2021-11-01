@@ -229,10 +229,10 @@ sudo systemctl stop systemd-resolved
    `./dnsseed -h dnsseed.example.com -n vps.example.com -m email@example.com`
 
     2. The second method is to add a redirect entry for port 53 in the iptables firewall system before running the seeder app as a non-root user by running the following cmd in the terminal (this one-time cmd requires root privileges to execute successfully):<br /><br />
-   `sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 5353`<br /><br />
+   `sudo iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 15353`<br /><br />
    Now, when starting the DNS seeder app, you must always specify the redirected port using the `-p` argument:<br /><br />
-   `./dnsseed -h dnsseed.example.com -n vps.example.com -m test@example.com -p 5353`<br /><br />
-   **NOTE:** The redirected port 5353 must be open and available to the public internet for this process to work properly. If you are behind a firewall, you will need to open port 5353 before your DNS seeder will properly respond to DNS requests.
+   `./dnsseed -h dnsseed.example.com -n vps.example.com -m test@example.com -p 15353`<br /><br />
+   **NOTE:** The redirected port 15353 must be open and available to the public internet for this process to work properly. If you are behind a firewall, you will need to open port 15353 before your DNS seeder will properly respond to DNS requests.
 
 12. That's it for the Seeder App Configuration! Be sure to read the extra troubleshooting notes below if you have any problems.
 
